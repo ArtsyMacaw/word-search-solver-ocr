@@ -7,6 +7,7 @@
 
 #define ALPHABET 26
 #define MAX_LENGTH 50
+#define DEFAULT_SIZE 100
 
 typedef struct trie
 {

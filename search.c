@@ -7,25 +7,38 @@ int main(int argc, char *argv[])
 {
     if (argc != 4)
     {
-        printf("Usage: search list scrambled out");
+        printf("Usage: search list puzzle\n");
         return 1;
     }
     
-    FILE *list, *scramble, *out;
+    FILE *list, *puzzle;
 
     list = fopen(argv[1], "r");
     if (!list)
     {
-        printf("Could not open %s", argv[1]);
+        printf("Could not open %s\n", argv[1]);
         return 2;
+    }
+    if (!load(list))
+    {
+        printf("Failed to build trie\n");
+        return 3;
     }
 
-    scramble = fopen(argv[2], "r");
-    if (!scramble)
+    puzzle = fopen(argv[2], "r");
+    if (!puzzle)
     {
-        printf("Could not open %s", argv[2]);
+        printf("Could not open %s\n", argv[2]);
         return 2;
     }
-    
-    load(list);
+    char **scramble = parse(puzzle);
+    int n = strlen(scramble[0]);
+    int m = strlen(scramble);
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            printf("%c", scramble[i][j]);
+        }
+    }
 }
