@@ -14,12 +14,9 @@ typedef struct trie
     struct trie *path[ALPHABET]; 
 } trie;
 
-void init_trie(trie *init);
+void init(trie *init);
 bool load(FILE *list);
-void insert_string(char *key);
-void set_valid(char *key);
-trie *get_node(trie *head, char *key);
-trie *build_node(trie *trav, int in);
-bool check(char *key);
+void insert(char *key);
+trie *locate(trie *head, char *key);
 
 #endif

@@ -11,7 +11,7 @@ trie *start;
 bool load(FILE *list)
 {
     start = malloc(sizeof(trie));
-    init_trie(start);
+    init(start);
     char word[MAX_LENGTH];
     while (fscanf(list, "%s", word) != EOF)
     {
@@ -21,24 +21,13 @@ bool load(FILE *list)
         {
             word[i] = tolower(word[i]);
         }
-        insert_string(word);
+        insert(word);
     }
     return true;
 }
 
-// Checks if word exists
-bool check(char *key)
-{
-    trie *word = get_node(start, key);
-    if (!word)
-    {
-        return false;
-    }
-    return word->valid;
-}
-
 // Initialize trie node to null values
-void init_trie(trie *init)
+void init(trie *init)
 {
     for (int i = 0; i < ALPHABET; i++)
     {
@@ -48,26 +37,28 @@ void init_trie(trie *init)
 }
 
 // Inserts string into trie
-void insert_string(char *key)
+void insert(char *key)
 {
     trie *trav = start;
     int n = strlen(key);
     for (int i = 0; i < n; i++)
     {
-        trav = build_node(trav, key[i] - 'a');
+        if (trav->path[key[i] - 'a'])
+        {
+            trav = trav->path[key[i] - 'a']
+        }
+        else
+        {
+            trie *node = malloc(sizeof(trie));
+            init(node);
+            trav->path[key[i] - 'a'] = node;
+        }
     }
-    set_valid(key);
+    trav->valid = true;
 }
 
-void set_valid(char *key)
-{
-    trie *node = malloc(sizeof(trie));
-    node = get_node(start, key);
-    node->valid = true;
-}
-
-// Traverses trie using string
-trie *get_node(trie *head, char *key)
+// Traverses trie using string and returns the node if it exists
+trie *locate(trie *head, char *key)
 {
     trie *node = head;
     int n = strlen(key);
@@ -80,20 +71,4 @@ trie *get_node(trie *head, char *key)
         }
     }
     return node;
-}
-
-// Inserts a single character into trie
-trie *build_node(trie *trav, int in)
-{
-    if (trav->path[in])
-    {
-        return trav->path[in];
-    }
-    else
-    {
-        trie *node = malloc(sizeof(trie));
-        init_trie(node);
-        trav->path[in] = node;
-        return node;
-    }
 }
