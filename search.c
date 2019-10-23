@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc != 4)
+    if (argc < 3)
     {
         printf("Usage: search list puzzle\n");
         return 1;
@@ -32,13 +32,15 @@ int main(int argc, char *argv[])
         return 2;
     }
     char **scramble = parse(puzzle);
-    int n = strlen(scramble[0]);
-    int m = strlen(scramble);
+
+    int n = row_size();
+    int m = col_size();
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
         {
             printf("%c", scramble[i][j]);
         }
+        printf("\n");
     }
 }

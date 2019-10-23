@@ -2,54 +2,80 @@
 #include <search.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
+
+int rsize = 0;
+int csize = 0;
 
 char **parse(FILE *inptr)
 {
-    int size = DEFAULT_SIZE;
-    int count = 0;
-    char **col = malloc(sizeof(char *) * size);
-    while (feof(inptr) == 0)
+    int size = 100;
+    csize = 0;
+    char **col = malloc(sizeof(char*) * size);
+    while (true)
     {
-        if (count == size)
+        if (csize == size)
         {
             size = size * 2;
-            col = realloc(col, size);
+            col = realloc(col, (size * sizeof(char*)));
         }
         else
         {
-            col[count] = get_row(inptr);
-            count++;
+            col[csize] = get_row(inptr);
+            csize++;
         }
+        char ch;
+        fread(&ch, sizeof(char), 1, inptr);
+        if (feof(inptr) != 0)
+        {
+            break;
+        }
+        fseek(inptr, -1, SEEK_CUR);
     }
-    strncpy(col, col, count + 1);
-    col[count] = '\0';
+    col = realloc(col, (csize + 1) * sizeof(char*));
+    col[csize] = NULL;
     return col;
 }
 
 char *get_row(FILE *inptr)
 {
-    int size = DEFAULT_SIZE;
+    int size = 100;
+    if (feof(inptr) != 0)
+    {
+        return NULL;
+    }
     char *row = malloc(sizeof(char) * size);
-    int count = 0;
+    rsize = 0;
+    char ch;
     while (true)
     {
-        if(count = size)
+        if(rsize == size)
         {
             size = size * 2;
             row = realloc(row, size);
         }
-        char ch = fgetc(inptr);
+        fread(&ch, sizeof(char), 1, inptr);
         if (ch == '\n')
         {
             break;
         }
         else if (ch != ' ')
         {
-            row[count] = ch;
-            count++;
+            row[rsize] = tolower(ch);
+            rsize++;
         }    
     }
-    strncpy(row, row, count + 1);
-    row[count] = '\0';
+    strncpy(row, row, rsize + 1);
+    row[rsize] = '\0';
     return row;
+}
+
+int row_size(void)
+{
+    return rsize;
+}
+
+int col_size(void)
+{
+    return csize;
 }

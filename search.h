@@ -7,7 +7,6 @@
 
 #define ALPHABET 26
 #define MAX_LENGTH 50
-#define DEFAULT_SIZE 100
 
 typedef struct trie
 {
@@ -15,9 +14,13 @@ typedef struct trie
     struct trie *path[ALPHABET]; 
 } trie;
 
+int row_size(void);
+int col_size(void);
+char **parse(FILE *inptr);
+char *get_row(FILE *inptr);
 void init(trie *init);
 bool load(FILE *list);
 void insert(char *key);
-trie *locate(trie *head, char *key);
+trie *locate(char *key);
 
 #endif

@@ -41,26 +41,27 @@ void insert(char *key)
 {
     trie *trav = start;
     int n = strlen(key);
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n  ; i++)
     {
         if (trav->path[key[i] - 'a'])
         {
-            trav = trav->path[key[i] - 'a']
+            trav = trav->path[key[i] - 'a'];
         }
         else
         {
             trie *node = malloc(sizeof(trie));
             init(node);
             trav->path[key[i] - 'a'] = node;
+            trav = trav->path[key[i] - 'a'];
         }
     }
     trav->valid = true;
 }
 
 // Traverses trie using string and returns the node if it exists
-trie *locate(trie *head, char *key)
+trie *locate(char *key)
 {
-    trie *node = head;
+    trie *node = start;
     int n = strlen(key);
     for (int i = 0; i < n; i++)
     {
