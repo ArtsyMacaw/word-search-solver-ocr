@@ -22,3 +22,4 @@ characters.
 - [ ] Implement colored output
 - [ ] Improve puzzle parser
 - [ ] Support all UTF-8 characters
+- [ ] Improve file naming scheme
