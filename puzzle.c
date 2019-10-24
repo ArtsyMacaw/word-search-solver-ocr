@@ -9,7 +9,7 @@ int csize = 0;
 
 char **parse(FILE *inptr)
 {
-    int size = 100;
+    int size = DEFAULT_SIZE;
     csize = 0;
     char **col = malloc(sizeof(char*) * size);
     while (true)
@@ -39,7 +39,7 @@ char **parse(FILE *inptr)
 
 char *get_row(FILE *inptr)
 {
-    int size = 100;
+    int size = DEFAULT_SIZE;
     if (feof(inptr) != 0)
     {
         return NULL;

@@ -6,6 +6,7 @@
 #include <search.h>
 
 trie *start;
+int max_length = 0;
 
 // Builds trie when given file ptr
 bool load(FILE *list)
@@ -15,8 +16,13 @@ bool load(FILE *list)
     char word[MAX_LENGTH];
     while (fscanf(list, "%s", word) != EOF)
     {
-        strncpy(word, word, strlen(word) + 1);
-        word[strlen(word)] = '\0';
+        int n = strlen(word);
+        strncpy(word, word, n + 1);
+        word[n]= '\0';
+        if (n > max_length)
+        {
+            max_length = n;
+        }
         for (int i = 0; word[i]; i++)
         {
             word[i] = tolower(word[i]);
@@ -59,17 +65,21 @@ void insert(char *key)
 }
 
 // Traverses trie using string and returns the node if it exists
-trie *locate(char *key)
+trie *locate(pos *key, int n)
 {
     trie *node = start;
-    int n = strlen(key);
     for (int i = 0; i < n; i++)
     {
-        node = node->path[key[i] - 'a'];
+        node = node->path[key[i].ch - 'a'];
         if (!node)
         {
             return NULL;
         }
     }
     return node;
+}
+
+int max_size(void)
+{
+    return max_length;
 }
