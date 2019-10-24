@@ -1,6 +1,6 @@
 # WORD-SEARCH-SOLVER
 ## Purpose
-A word search solver that supports all UTF-8 characters, reasonably fast, and
+A word search solver that supports all UTF-8 characters, is reasonably fast, and
 support parsing images. Also personally created as an educational experience
 in data structures, encoding, and the life cycle of a coding project.
 # Usage
