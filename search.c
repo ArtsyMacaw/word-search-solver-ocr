@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-#include <ctype.h>
 #include <search.h>
 
 char **scramble;
@@ -10,7 +6,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 3)
     {
-        printf("Usage: search list puzzle\n");
+        printf("Usage: word-search list puzzle\n");
         return 1;
     }
     
@@ -34,7 +30,13 @@ int main(int argc, char *argv[])
         printf("Could not open %s\n", argv[2]);
         return 4;
     }
+
     scramble = parse(puzzle);
+    if (!scramble)
+    {
+        printf("Could not parse puzzle");
+        return 5;
+    }
 
     int n = row_size();
     int m = col_size();
@@ -55,11 +57,22 @@ int main(int argc, char *argv[])
     {
         for (int j = 0; j < n; j++)
         {
-            printf("%c ", scramble[i][j]);
+            if (isupper(scramble[i][j]))
+            {
+                printf(BOLD "%c " RESET, scramble[i][j]);
+            }
+            else
+            {
+                printf("%c ", scramble[i][j]);
+            }
         }
         printf("\n");
     }
 
+    fclose(list);
+    fclose(puzzle);
+    unload_trie(get_head());
+    unload_array(scramble);
     return 0;
 }
 
@@ -83,7 +96,6 @@ void check(pos cor)
             }
             if (node->valid)
             {
-                buffer = realloc(buffer, sizeof(pos) * count);
                 highlight(buffer, count);
                 break;
             }
@@ -95,10 +107,9 @@ void check(pos cor)
             buffer[count] = tmp;
             count++;
         }
-        free(buffer);
-        buffer = malloc(sizeof(pos) * max_size());
         count = 0;
     }
+    free(buffer);
 }
 
 pos translate(pos cor, int dir)

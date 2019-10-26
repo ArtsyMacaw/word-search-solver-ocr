@@ -1,8 +1,4 @@
-#include <stdio.h>
 #include <search.h>
-#include <stdbool.h>
-#include <string.h>
-#include <ctype.h>
 
 int rsize = 0;
 int csize = 0;
@@ -17,13 +13,19 @@ char **parse(FILE *inptr)
         if (csize == size)
         {
             size = size * 2;
-            col = realloc(col, (size * sizeof(char*)));
+            char **tmp = realloc(col, (size * sizeof(char*)));
+            if (!tmp)
+            {
+                return tmp;
+            }
+            else if (tmp != col)
+            {
+                free(col);
+                col = tmp;
+            }
         }
-        else
-        {
-            col[csize] = get_row(inptr);
-            csize++;
-        }
+        col[csize] = get_row(inptr);
+        csize++;
         char ch;
         fread(&ch, sizeof(char), 1, inptr);
         if (feof(inptr) != 0)
@@ -52,7 +54,16 @@ char *get_row(FILE *inptr)
         if(rsize == size)
         {
             size = size * 2;
-            row = realloc(row, size);
+            char *tmp = realloc(row, size);
+            if (!tmp)
+            {
+                return tmp;
+            }
+            else if (tmp != row)
+            {
+                free(row);
+                row = tmp;
+            }
         }
         fread(&ch, sizeof(char), 1, inptr);
         if (ch == '\n')
@@ -65,9 +76,19 @@ char *get_row(FILE *inptr)
             rsize++;
         }    
     }
-    strncpy(row, row, rsize + 1);
+    row = realloc(row, sizeof(char) * (rsize + 1));
     row[rsize] = '\0';
     return row;
+}
+
+void unload_array(char **tmp)
+{
+    int n = col_size();
+    for (int i = 0; i < n; i++)
+    {
+        free(tmp[i]);
+    }
+    free(tmp);
 }
 
 int row_size(void)
