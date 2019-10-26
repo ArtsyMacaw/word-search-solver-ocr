@@ -5,7 +5,7 @@ supports parsing images. Also personally created as an educational experience
 in data structures, encoding, and the life cycle of a project.
 ## Usage
 Simple run "word-search list puzzle" where list is file that contains the
-hidden words with each word on a line, and puzzle is a file which contains
+hidden words with each word separated by a space or line, and puzzle is a file which contains
 the scrambled letters.
 ## Implementation Details
 Begins by creating a trie of all key words, and then proceeds to load puzzle
