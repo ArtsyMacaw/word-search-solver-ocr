@@ -23,3 +23,4 @@ characters.
 - [ ] Support all UTF-8 characters
 - [X] Allow key words of arbitrary length
 - [ ] Standardize function naming scheme
+- [ ] Improve file naming scheme
