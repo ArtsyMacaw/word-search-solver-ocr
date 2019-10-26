@@ -2,7 +2,7 @@
 ## Purpose
 A word search solver that supports all UTF-8 characters, is reasonably fast, and
 supports parsing images. Also personally created as an educational experience
-in data structures, encoding, and the life cycle of a coding project.
+in data structures, encoding, and the life cycle of a project.
 ## Usage
 Simple run "word-search list puzzle" where list is file that contains the
 hidden words with each word on a line, and puzzle is a file which contains
