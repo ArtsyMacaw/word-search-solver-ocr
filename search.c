@@ -1,6 +1,6 @@
 #include <search.h>
 
-char **scramble;
+wchar_t **scramble;
 
 int main(int argc, char *argv[])
 {
@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     
+    setlocale(LC_ALL, "");
     FILE *list, *puzzle;
 
     list = fopen(argv[1], "r");
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
         {
             cor.x = i;
             cor.y = j;
-            cor.ch = tolower(scramble[i][j]);
+            cor.ch = towlower(scramble[i][j]);
             check(cor);
         }
     }
@@ -57,22 +58,23 @@ int main(int argc, char *argv[])
     {
         for (int j = 0; j < n; j++)
         {
-            if (isupper(scramble[i][j]))
+            if (iswupper(scramble[i][j]))
             {
-                printf(BOLD "%c " RESET, scramble[i][j]);
+                wprintf(BOLD L"%lc" RESET, towupper(scramble[i][j]));
             }
             else
             {
-                printf("%c ", scramble[i][j]);
+                wprintf(L"%lc", towupper(scramble[i][j]));
             }
+            wprintf(L" ");
         }
-        printf("\n");
+        wprintf(L"\n");
     }
 
-    fclose(list);
-    fclose(puzzle);
     unload_trie(get_head());
     unload_array(scramble);
+    fclose(list);
+    fclose(puzzle);
     return 0;
 }
 
@@ -149,7 +151,7 @@ pos translate(pos cor, int dir)
         cor.x = -1;
         return cor;
     }
-    cor.ch = tolower(scramble[cor.x][cor.y]);
+    cor.ch = towlower(scramble[cor.x][cor.y]);
 
     return cor;
 }
@@ -158,6 +160,6 @@ void highlight(pos *cors, int length)
 {
     for (int i = 0; i < length; i++)
     {
-        scramble[cors[i].x][cors[i].y] = toupper(cors[i].ch);
+        scramble[cors[i].x][cors[i].y] = towupper(cors[i].ch);
     }
 }

@@ -14,13 +14,13 @@ a certain path of characters doesn't exist or that its valid then highlights tho
 characters.
 ## TODO
 - [X] Implement basic functionality
-- [ ] Implement colored output
+- [X] Implement colored output
 - [X] Improve NULL safety checks
 - [X] Fix memory leaks
 - [ ] Support other puzzle shapes besides squares
 - [ ] Improve puzzle parser
 - [ ] Add ocr support
-- [ ] Support all UTF-8 characters
+- [X] Support all UTF-8 characters
 - [X] Allow key words of arbitrary length
 - [ ] Standardize function naming scheme
 - [ ] Improve file naming scheme

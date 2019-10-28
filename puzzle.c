@@ -3,85 +3,92 @@
 int rsize = 0;
 int csize = 0;
 
-char **parse(FILE *inptr)
+wchar_t **parse(FILE *inptr)
 {
-    int size = DEFAULT_SIZE;
     csize = 0;
-    char **col = malloc(sizeof(char*) * size);
+    int size = DEFAULT_SIZE;
+    wchar_t **col = malloc(sizeof(wchar_t*) * size);
     while (true)
     {
         if (csize == size)
         {
             size = size * 2;
-            char **tmp = realloc(col, (size * sizeof(char*)));
+            wchar_t **tmp = realloc(col, (size * sizeof(wchar_t*)));
             if (!tmp)
             {
+                free(col);
                 return tmp;
             }
             else if (tmp != col)
             {
-                free(col);
                 col = tmp;
             }
         }
         col[csize] = get_row(inptr);
-        csize++;
-        char ch;
-        fread(&ch, sizeof(char), 1, inptr);
-        if (feof(inptr) != 0)
+        if (!col[csize])
         {
             break;
         }
-        fseek(inptr, -1, SEEK_CUR);
+        csize++;
     }
-    col = realloc(col, (csize + 1) * sizeof(char*));
+
+    col = realloc(col, (csize + 1) * sizeof(wchar_t*));
     col[csize] = NULL;
     return col;
 }
 
-char *get_row(FILE *inptr)
+wchar_t *get_row(FILE *inptr)
 {
     int size = DEFAULT_SIZE;
-    if (feof(inptr) != 0)
-    {
-        return NULL;
-    }
-    char *row = malloc(sizeof(char) * size);
-    rsize = 0;
-    char ch;
+    wchar_t *row = malloc(sizeof(wchar_t) * size);
+    int count = 0;
+
     while (true)
     {
-        if(rsize == size)
+        if(count == size)
         {
             size = size * 2;
-            char *tmp = realloc(row, size);
+            wchar_t *tmp = realloc(row, size * sizeof(wchar_t));
             if (!tmp)
             {
+                free(row);
                 return tmp;
             }
             else if (tmp != row)
             {
-                free(row);
                 row = tmp;
             }
         }
-        fread(&ch, sizeof(char), 1, inptr);
-        if (ch == '\n')
+
+        wint_t wc = fgetwc(inptr);
+
+        if(wc == NEWLINE)
         {
             break;
         }
-        else if (ch != ' ')
+
+        if (wc == WEOF)
         {
-            row[rsize] = tolower(ch);
-            rsize++;
+            free(row);
+            return NULL;
+        }
+
+        if (wc != SPACE && wc != TAB)
+        {
+            row[count] = towlower(wc);
+            count++;
         }    
     }
-    row = realloc(row, sizeof(char) * (rsize + 1));
+    if (rsize < count)
+    {
+        rsize = count;
+    }
+    row = realloc(row, sizeof(wchar_t) * (rsize + 1));
     row[rsize] = '\0';
     return row;
 }
 
-void unload_array(char **tmp)
+void unload_array(wchar_t **tmp)
 {
     int n = col_size();
     for (int i = 0; i < n; i++)
