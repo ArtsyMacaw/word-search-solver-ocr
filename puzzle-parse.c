@@ -1,4 +1,4 @@
-#include <search.h>
+#include <word-search.h>
 
 int rsize = 0;
 int csize = 0;

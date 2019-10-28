@@ -1,4 +1,4 @@
-#include <search.h>
+#include <word-search.h>
 
 wchar_t **scramble;
 
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
         wprintf(L"\n");
     }
 
-    unload_trie(get_head());
+    unload_trie();
     unload_array(scramble);
     fclose(list);
     fclose(puzzle);

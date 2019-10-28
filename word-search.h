@@ -37,6 +37,12 @@ typedef struct
     int y;
 } pos;
 
+typedef struct
+{
+    wchar_t ch;
+    bool highlight;
+} bchar;
+
 typedef struct trie
 {
     bool valid;
@@ -44,6 +50,7 @@ typedef struct trie
 } trie;
 
 wchar_t *get_word(FILE *inptr);
+void index_node(trie *node);
 void check(pos cor);
 pos translate(pos cor, int dir);
 void highlight(pos *cors, int length);
@@ -55,7 +62,7 @@ bool load(FILE *list);
 void insert(wchar_t *key);
 trie *locate(pos *key, int length);
 int max_size(void);
-void unload_trie(trie *trav);
+void unload_trie(void);
 void unload_array(wchar_t **tmp);
 trie *get_head(void);
 
