@@ -3,17 +3,17 @@
 int rsize = 0;
 int csize = 0;
 
-wchar_t **parse(FILE *inptr)
+bchar **parse(FILE *inptr)
 {
     csize = 0;
     int size = DEFAULT_SIZE;
-    wchar_t **col = malloc(sizeof(wchar_t*) * size);
+    bchar **col = malloc(sizeof(bchar*) * size);
     while (true)
     {
         if (csize == size)
         {
             size = size * 2;
-            wchar_t **tmp = realloc(col, (size * sizeof(wchar_t*)));
+            bchar **tmp = realloc(col, (size * sizeof(bchar*)));
             if (!tmp)
             {
                 free(col);
@@ -32,15 +32,15 @@ wchar_t **parse(FILE *inptr)
         csize++;
     }
 
-    col = realloc(col, (csize + 1) * sizeof(wchar_t*));
+    col = realloc(col, (csize + 1) * sizeof(bchar*));
     col[csize] = NULL;
     return col;
 }
 
-wchar_t *get_row(FILE *inptr)
+bchar *get_row(FILE *inptr)
 {
     int size = DEFAULT_SIZE;
-    wchar_t *row = malloc(sizeof(wchar_t) * size);
+    bchar *row = malloc(sizeof(bchar) * size);
     int count = 0;
 
     while (true)
@@ -48,7 +48,7 @@ wchar_t *get_row(FILE *inptr)
         if(count == size)
         {
             size = size * 2;
-            wchar_t *tmp = realloc(row, size * sizeof(wchar_t));
+            bchar *tmp = realloc(row, size * sizeof(bchar));
             if (!tmp)
             {
                 free(row);
@@ -75,7 +75,8 @@ wchar_t *get_row(FILE *inptr)
 
         if (wc != SPACE && wc != TAB)
         {
-            row[count] = towlower(wc);
+            row[count].ch = wc;
+            row[count].highlight = false;
             count++;
         }    
     }
@@ -83,12 +84,12 @@ wchar_t *get_row(FILE *inptr)
     {
         rsize = count;
     }
-    row = realloc(row, sizeof(wchar_t) * (rsize + 1));
-    row[rsize] = '\0';
+    row = realloc(row, sizeof(bchar) * (rsize + 1));
+    row[rsize].ch = '\0';
     return row;
 }
 
-void unload_array(wchar_t **tmp)
+void unload_array(bchar **tmp)
 {
     int n = col_size();
     for (int i = 0; i < n; i++)

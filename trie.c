@@ -1,18 +1,25 @@
 #include <word-search.h>
 
-trie **all_nodes;
-trie *start;
+typedef struct
+{
+    trie **node;
+    int length;
+} node_index;
+
+node_index trie_index;
+trie *head;
+
 int max_length = 0;
-int length = 0;
 
 // Builds trie when given file ptr
 bool load(FILE *list)
 {
-    all_nodes = calloc(DEFAULT_SIZE, sizeof(trie*));
-    start = calloc(1, sizeof(trie));
-    index_node(start);
-    wchar_t *word = NULL;
+    trie_index.node = calloc(DEFAULT_SIZE, sizeof(trie*));
+    trie_index.length = 0;
+    head = calloc(1, sizeof(trie));
+    index_node(head);
 
+    wchar_t *word = NULL;
     while (feof(list) == 0)
     {
         word = get_word(list);
@@ -27,33 +34,34 @@ bool load(FILE *list)
     return true;
 }
 
+// Does what it says on the tin indexes a node
 void index_node(trie *node)
 {
-    static int count = 0;
     static int size = DEFAULT_SIZE;
 
-    if (size == count)
+    if (size == trie_index.length)
     {
         size = size * 2;
-        trie **tmp = realloc(all_nodes, size * sizeof(trie*));
+        trie **tmp = realloc(trie_index.node, size * sizeof(trie*));
         if (!tmp)
         {
             unload_trie();
         }
-        else if (tmp != all_nodes)
+        else if (tmp != trie_index.node)
         {
-            all_nodes = tmp;
+            trie_index.node = tmp;
         }
     }
-    all_nodes[count] = node;
+    trie_index.node[trie_index.length] = node;
+    trie_index.length++;
 }
 
+// Gets word from a file
 wchar_t *get_word(FILE *inptr)
 {
     int size = DEFAULT_SIZE;
     wchar_t *word = malloc(size * sizeof(wchar_t));
     int count = 0;
-    length = 0;
 
     while (true)
     {
@@ -90,30 +98,24 @@ wchar_t *get_word(FILE *inptr)
     word = realloc(word, (count + 1) * sizeof(wchar_t));
     word[count] = '\0';
 
-    length = count;
     return word;
 }
 
+// frees trie using index
 void unload_trie(void)
 {
-    int count = 0;
-    while (true)
+    for (int i = 0; i < trie_index.length; i++)
     {
-        if (!all_nodes[count])
-        {
-            break;
-        }
-        free(all_nodes[count]);
-        count++;
+        free(trie_index.node[i]);
     }
-    free(all_nodes);
+    free(trie_index.node);
 }
 
 // Inserts string into trie
 void insert(wchar_t *key)
 {
-    trie *trav = start;
-    for (int i = 0; i < length  ; i++)
+    trie *trav = head;
+    for (int i = 0; i < wcslen(key); i++)
     {
         if (!trav->path[towlower(key[i])])
         {
@@ -129,7 +131,7 @@ void insert(wchar_t *key)
 // Traverses trie using string and returns the node if it exists
 trie *locate(pos *key, int n)
 {
-    trie *node = start;
+    trie *node = head;
     for (int i = 0; i < n; i++)
     {
         node = node->path[towlower(key[i].ch)];
@@ -141,12 +143,8 @@ trie *locate(pos *key, int n)
     return node;
 }
 
+// Return max size of a word
 int max_size(void)
 {
     return max_length;
-}
-
-trie *get_head(void)
-{
-    return start;
 }

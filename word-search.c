@@ -1,6 +1,6 @@
 #include <word-search.h>
 
-wchar_t **scramble;
+bchar **scramble;
 
 int main(int argc, char *argv[])
 {
@@ -43,28 +43,28 @@ int main(int argc, char *argv[])
     int m = col_size();
     pos cor;
 
-    for (int i = 0; i < m; i++)
+    for (int x = 0; x < m; x++)
     {
-        for (int j = 0; j < n; j++)
+        for (int y = 0; y < n; y++)
         {
-            cor.x = i;
-            cor.y = j;
-            cor.ch = towlower(scramble[i][j]);
+            cor.x = x;
+            cor.y = y;
+            cor.ch = towlower(scramble[x][y].ch);
             check(cor);
         }
     }
 
-    for (int i = 0; i < m; i++)
+    for (int x = 0; x < m; x++)
     {
-        for (int j = 0; j < n; j++)
+        for (int y = 0; y < n; y++)
         {
-            if (iswupper(scramble[i][j]))
+            if (scramble[x][y].highlight)
             {
-                wprintf(BOLD L"%lc" RESET, towupper(scramble[i][j]));
+                wprintf(BOLD L"%lc" RESET, scramble[x][y].ch);
             }
             else
             {
-                wprintf(L"%lc", towupper(scramble[i][j]));
+                wprintf(L"%lc", scramble[x][y].ch);
             }
             wprintf(L" ");
         }
@@ -151,7 +151,7 @@ pos translate(pos cor, int dir)
         cor.x = -1;
         return cor;
     }
-    cor.ch = towlower(scramble[cor.x][cor.y]);
+    cor.ch = towlower(scramble[cor.x][cor.y].ch);
 
     return cor;
 }
@@ -160,6 +160,6 @@ void highlight(pos *cors, int length)
 {
     for (int i = 0; i < length; i++)
     {
-        scramble[cors[i].x][cors[i].y] = towupper(cors[i].ch);
+        scramble[cors[i].x][cors[i].y].highlight = true;
     }
 }

@@ -33,15 +33,15 @@
 typedef struct
 {
     wchar_t ch;
-    int x;
-    int y;
-} pos;
+    bool highlight;
+} bchar;
 
 typedef struct
 {
     wchar_t ch;
-    bool highlight;
-} bchar;
+    int x;
+    int y;
+} pos;
 
 typedef struct trie
 {
@@ -56,14 +56,13 @@ pos translate(pos cor, int dir);
 void highlight(pos *cors, int length);
 int row_size(void);
 int col_size(void);
-wchar_t **parse(FILE *inptr);
-wchar_t *get_row(FILE *inptr);
+bchar **parse(FILE *inptr);
+bchar *get_row(FILE *inptr);
 bool load(FILE *list);
 void insert(wchar_t *key);
 trie *locate(pos *key, int length);
 int max_size(void);
 void unload_trie(void);
-void unload_array(wchar_t **tmp);
-trie *get_head(void);
+void unload_array(bchar **tmp);
 
 #endif
