@@ -1,7 +1,11 @@
 #include <word-search.h>
 
-int rsize = 0;
-int csize = 0;
+static int rsize = -1;
+static int csize = 0;
+
+#define TAB 9
+#define NEWLINE 10
+#define SPACE 32
 
 bchar **parse(FILE *inptr)
 {
@@ -80,7 +84,7 @@ bchar *get_row(FILE *inptr)
             count++;
         }    
     }
-    if (rsize < count)
+    if (rsize > count || rsize == -1)
     {
         rsize = count;
     }

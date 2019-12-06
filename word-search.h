@@ -11,24 +11,7 @@
 #include <ctype.h>
 
 #define ALPHABET 65536
-#define DIRECTIONS 8
 #define DEFAULT_SIZE 100
-
-#define BOLD "\x1b[31m"
-#define RESET "\x1b[0m"
-
-#define SPACE 32
-#define NEWLINE 10
-#define TAB 9
-
-#define N 0
-#define NE 1
-#define E 2
-#define SE 3
-#define S 4
-#define SW 5
-#define W 6
-#define NW 7
 
 typedef struct
 {
@@ -49,6 +32,8 @@ typedef struct trie
     struct trie *path[ALPHABET]; 
 } trie;
 
+FILE *read_puzzle_image(char *file);
+FILE *read_list_image(char *file);
 wchar_t *get_word(FILE *inptr);
 void index_node(trie *node);
 void check(pos cor);

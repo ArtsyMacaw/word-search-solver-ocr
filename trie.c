@@ -6,8 +6,8 @@ typedef struct
     int length;
 } node_index;
 
-node_index trie_index;
-trie *head;
+static node_index trie_index;
+static trie *head;
 
 int max_length = 0;
 
