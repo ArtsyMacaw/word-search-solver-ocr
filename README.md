@@ -13,9 +13,10 @@ into a 2d array, checks all characters in a direction until the trie confirms ei
 a certain path of characters doesn't exist or that its valid then highlights those
 characters.
 ## Compiling from Source
-Install dependencies:  
+Install dependencies:
 * tesseract  
 * leptonica  
+* meson  
 
 Run these commands:  
 ```
