@@ -14,10 +14,11 @@ a certain path of characters doesn't exist or that its valid then highlights tho
 characters.
 ## Compiling from Source
 Install dependencies:  
-    * tesseract  
-    * leptonica  
+* tesseract  
+* leptonica  
+
+Run these commands:  
 ```
-Run these commands:
 git clone https://github.com/ArtsyMacaw/word-search-solver-ocr.git
 cd word-search-solver-ocr
 meson build
