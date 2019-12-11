@@ -1,7 +1,7 @@
 #include <word-search.h>
 #include <string.h>
 #include <allheaders.h>
-#include <capi.h>
+#include <tesseract/capi.h>
 
 #define CONFIG_SIZE 1
 
@@ -10,7 +10,7 @@ FILE *read_puzzle_image(char *file)
     char **configs = malloc(sizeof(char *));
     if (!configs)
     {
-        fprintf(stderr, "Could not allocate memory\n");
+        fprintf(stderr, "Failed to allocate memory\n");
         return NULL;
     }
     configs[0] = "blacklist";
@@ -39,18 +39,31 @@ FILE *read_puzzle_image(char *file)
     char *text = TessBaseAPIGetUTF8Text(handle);
     if (!text)
     {
-        fprintf(stderr, "Could not get text");
+        fprintf(stderr, "Could not get text\n");
         return NULL;
     }
 
-    char buf[DEFAULT_SIZE];
-    snprintf(buf, sizeof(buf), "%s%s", file, ".txt");
+    char *buf = malloc(DEFAULT_SIZE * sizeof(char));
+    if (!buf)
+    {
+        fprintf(stderr, "Failed to allocate memory\n");
+    }
+
+    int n = snprintf(buf, sizeof(file), "%s%s", file, ".txt");
+    if (n != 0)
+    {
+        free(buf);
+        buf = malloc((DEFAULT_SIZE * sizeof(char)) + (sizeof(char) * n));
+        snprintf(buf, (DEFAULT_SIZE * sizeof(char)) + (sizeof(char) * n), "%s%s", file, ".txt");
+    }
 
     FILE *puzzle_img = fopen(buf, "w");
     fputs(text, puzzle_img);
+    // Opens and cloes file to reset to wide char mode
     fclose(puzzle_img);
     puzzle_img = fopen(buf, "r");
 
+    free(buf);
   	TessDeleteText(text);
 	TessBaseAPIEnd(handle);
 	TessBaseAPIDelete(handle);
@@ -86,18 +99,31 @@ FILE *read_list_image(char *file)
     char *text = TessBaseAPIGetUTF8Text(handle);
     if (!text)
     {
-        fprintf(stderr, "Could not get text");
+        fprintf(stderr, "Could not get text\n");
         return NULL;
     }
 
-    char buf[256];
-    snprintf(buf, sizeof(buf), "%s%s", file, ".txt");
+    char *buf = malloc(DEFAULT_SIZE * sizeof(char));
+    if (!buf)
+    {
+        fprintf(stderr, "Failed to allocate memory\n");
+    }
+
+    int n = snprintf(buf, sizeof(file), "%s%s", file, ".txt");
+    if (n != 0)
+    {
+        free(buf);
+        buf = malloc((DEFAULT_SIZE * sizeof(char)) + (sizeof(char) * n));
+        snprintf(buf, (DEFAULT_SIZE * sizeof(char)) + (sizeof(char) * n), "%s%s", file, ".txt");
+    }
 
     FILE *output = fopen(buf, "w");
     fputs(text, output);
+    // Opens and cloes file to reset to wide char mode
     fclose(output);
     output = fopen(buf, "r");
 
+    free(buf);
   	TessDeleteText(text);
 	TessBaseAPIEnd(handle);
 	TessBaseAPIDelete(handle);

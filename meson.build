@@ -1,7 +1,6 @@
 project('word-search-solver', 'c')
-incdir = include_directories('/usr/include/leptonica', '/usr/include/tesseract')
 install_headers('word-search.h')
 ocr = dependency('tesseract')
 img = dependency('lept')
-lib = shared_library('wordsearch', 'trie.c', 'puzzle-parse.c', 'ocr.c', include_directories : incdir, dependencies : [ocr, img])
+lib = shared_library('wordsearch', 'trie.c', 'puzzle-parse.c', 'ocr.c', dependencies : [ocr, img])
 executable('word-search', 'main.c', link_with : lib)

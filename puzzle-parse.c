@@ -1,11 +1,7 @@
 #include <word-search.h>
 
-static int rsize = -1;
+static int rsize = INVALID;
 static int csize = 0;
-
-#define TAB 9
-#define NEWLINE 10
-#define SPACE 32
 
 bchar **parse(FILE *inptr)
 {
@@ -66,7 +62,7 @@ bchar *get_row(FILE *inptr)
 
         wint_t wc = fgetwc(inptr);
 
-        if(wc == NEWLINE)
+        if(wc == '\n')
         {
             break;
         }
@@ -77,14 +73,14 @@ bchar *get_row(FILE *inptr)
             return NULL;
         }
 
-        if (wc != SPACE && wc != TAB)
+        if (wc != ' ' && wc != '	')
         {
             row[count].ch = wc;
             row[count].highlight = false;
             count++;
         }    
     }
-    if (rsize > count || rsize == -1)
+    if (rsize > count || rsize == INVALID)
     {
         rsize = count;
     }

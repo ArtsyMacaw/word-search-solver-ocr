@@ -1,5 +1,4 @@
 #include <word-search.h>
-
 #define DIRECTIONS 8
 
 #define N 0
@@ -20,7 +19,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 3)
     {
-        printf("Usage: word-search list puzzle\n");
+        fprintf(stderr, "Usage: word-search list puzzle\n");
         return 1;
     }
     
@@ -30,43 +29,36 @@ int main(int argc, char *argv[])
     list = fopen(argv[1], "r");
     if (!list)
     {
-        printf("Could not open %s\n", argv[1]);
+        fprintf(stderr, "Could not open %s\n", argv[1]);
         return 2;
     }
 
     // Check if png or jpeg
-    unsigned char header[8];
-    fread(header, sizeof(unsigned char), 8, list);
-    if ((header[0] == 137 && header[1] == 80 &&
-                header[2] == 78 && header[3] == 71 &&
-                header[4] == 13 && header[5] == 10 &&
-                header[6] == 26 && header[7] == 10) ||
-                (header[0] == 0xFF && header[1] == 0xD8 &&
-                header[2] == 0xFF))
+    if (isImage(list))
     {
         fclose(list);
         list = read_list_image(argv[1]);
     }
     else
     {
-        fclose(list);
+        fclose(list); // Closes and reopens file to set back to wide char mode
         list = fopen(argv[1], "r");
     }
 
     if (!load(list))
     {
-        printf("Failed to build trie\n");
+        fprintf(stderr, "Failed to build trie\n");
         return 3;
     }
 
     puzzle = fopen(argv[2], "r");
-    fread(header, sizeof(unsigned char), 8, puzzle);
-    if ((header[0] == 137 && header[1] == 80 &&
-                header[2] == 78 && header[3] == 71 &&
-                header[4] == 13 && header[5] == 10 &&
-                header[6] == 26 && header[7] == 10) ||
-                (header[0] == 0xFF && header[1] == 0xD8 &&
-                header[2] == 0xFF))
+    if (!puzzle)
+    {
+        fprintf(stderr, "Could not open %s\n", argv[2]);
+        return 4;
+    }
+
+    if (isImage(puzzle))
     {
         fclose(puzzle);
         puzzle = read_puzzle_image(argv[2]);
@@ -77,16 +69,10 @@ int main(int argc, char *argv[])
         puzzle = fopen(argv[2], "r");
     }
 
-    if (!puzzle)
-    {
-        printf("Could not open %s\n", argv[2]);
-        return 4;
-    }
-
     scramble = parse(puzzle);
     if (!scramble)
     {
-        printf("Could not parse puzzle");
+        fprintf(stderr, "Could not parse puzzle\n");
         return 5;
     }
 
@@ -94,7 +80,7 @@ int main(int argc, char *argv[])
     int m = col_size();
     if (n == 0 || n == -1)
     {
-        printf("Unable to determine size of sides\n");
+        fprintf(stderr, "Unable to determine size of sides\n");
         return 6;
     }
     pos cor;
@@ -137,7 +123,7 @@ int main(int argc, char *argv[])
 void check(pos cor)
 {
     int count = 0;
-    pos *buffer = malloc(max_size() * sizeof(pos));
+    pos *buffer = malloc(word_length() * sizeof(pos));
     pos tmp;
     for (int i = 0; i < DIRECTIONS; i++)
     {
@@ -158,7 +144,7 @@ void check(pos cor)
                 break;
             }
             tmp = translate(tmp, i);
-            if (tmp.x == -1)
+            if (tmp.x == INVALID)
             {
                 break;
             }
@@ -204,7 +190,7 @@ pos translate(pos cor, int dir)
     }
     if ((cor.x >= row_size() || cor.x < 0) || (cor.y >= col_size() || cor.y < 0))
     {
-        cor.x = -1;
+        cor.x = INVALID;
         return cor;
     }
     cor.ch = towlower(scramble[cor.x][cor.y].ch);
@@ -217,5 +203,24 @@ void highlight(pos *cors, int length)
     for (int i = 0; i < length; i++)
     {
         scramble[cors[i].x][cors[i].y].highlight = true;
+    }
+}
+
+bool isImage(FILE *inptr)
+{
+    unsigned char header[8];
+    fread(header, sizeof(unsigned char), 8, inptr);
+    if ((header[0] == 137 && header[1] == 80 &&
+                header[2] == 78 && header[3] == 71 &&
+                header[4] == 13 && header[5] == 10 &&
+                header[6] == 26 && header[7] == 10) ||
+                (header[0] == 0xFF && header[1] == 0xD8 &&
+                header[2] == 0xFF))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }

@@ -10,6 +10,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#define INVALID -1
 #define ALPHABET 65536
 #define DEFAULT_SIZE 100
 
@@ -46,8 +47,9 @@ bchar *get_row(FILE *inptr);
 bool load(FILE *list);
 void insert(wchar_t *key);
 trie *locate(pos *key, int length);
-int max_size(void);
 void unload_trie(void);
 void unload_array(bchar **tmp);
+int word_length(void);
+bool isImage(FILE *inptr);
 
 #endif

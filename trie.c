@@ -1,5 +1,7 @@
 #include <word-search.h>
 
+/* Used instead of iterating over all pointers in trie
+because it takes extremely long when using full unicode set */
 typedef struct
 {
     trie **node;
@@ -8,15 +10,25 @@ typedef struct
 
 static node_index trie_index;
 static trie *head;
-
-int max_length = 0;
+static int max_word_length = 0;
 
 // Builds trie when given file ptr
 bool load(FILE *list)
 {
     trie_index.node = calloc(DEFAULT_SIZE, sizeof(trie*));
+    if (!trie_index.node)
+    {
+        fprintf(stderr, "Failed to allocate memory\n");
+        return false;
+    }
     trie_index.length = 0;
+
     head = calloc(1, sizeof(trie));
+    if (!head)
+    {
+        fprintf(stderr, "Failed to allocate memory\n");
+        return false;
+    }
     index_node(head);
 
     wchar_t *word = NULL;
@@ -45,7 +57,7 @@ void index_node(trie *node)
         trie **tmp = realloc(trie_index.node, size * sizeof(trie*));
         if (!tmp)
         {
-            unload_trie();
+            fprintf(stderr, "Failed to allocate memory\n");
         }
         else if (tmp != trie_index.node)
         {
@@ -56,7 +68,7 @@ void index_node(trie *node)
     trie_index.length++;
 }
 
-// Gets word from a file
+// Gets word from a file while ignoring seperating characters
 wchar_t *get_word(FILE *inptr)
 {
     int size = DEFAULT_SIZE;
@@ -90,9 +102,9 @@ wchar_t *get_word(FILE *inptr)
         count++;
     }
 
-    if (count > max_length)
+    if (count > max_word_length)
     {
-        max_length = count;
+        max_word_length = count;
     }
 
     word = realloc(word, (count + 1) * sizeof(wchar_t));
@@ -101,7 +113,7 @@ wchar_t *get_word(FILE *inptr)
     return word;
 }
 
-// frees trie using index
+// Frees trie using index
 void unload_trie(void)
 {
     for (int i = 0; i < trie_index.length; i++)
@@ -120,6 +132,10 @@ void insert(wchar_t *key)
         if (!trav->path[towlower(key[i])])
         {
             trie *node = calloc(1, sizeof(trie));
+            if (!node)
+            {
+                fprintf(stderr, "Failed to allocate memory\n");
+            }
             index_node(node);
             trav->path[tolower(key[i])] = node;
         }
@@ -143,8 +159,7 @@ trie *locate(pos *key, int n)
     return node;
 }
 
-// Return max size of a word
-int max_size(void)
+int word_length(void)
 {
-    return max_length;
+    return max_word_length;
 }
