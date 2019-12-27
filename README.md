@@ -31,8 +31,6 @@ sudo ninja -C build install
 - [X] Implement colored output
 - [X] Improve NULL safety checks
 - [X] Fix memory leaks
-- [ ] Support other puzzle shapes besides squares
-- [ ] Improve puzzle parser
 - [X] Add ocr support
 - [X] Support all UTF-8 characters
 - [X] Allow key words of arbitrary length
