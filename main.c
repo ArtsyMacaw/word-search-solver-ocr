@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    // Check if png or jpeg
     if (isImage(list))
     {
         fclose(list);
@@ -65,7 +64,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        fclose(puzzle);
+        fclose(puzzle); // Closes and reopens file to set back to wide char mode
         puzzle = fopen(argv[2], "r");
     }
 
