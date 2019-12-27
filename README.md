@@ -23,8 +23,8 @@ Run these commands:
 git clone https://github.com/ArtsyMacaw/word-search-solver-ocr.git
 cd word-search-solver-ocr
 meson build
-cd build
-ninja
+ninja -C build
+sudo ninja -C build install
 ```
 ## TODO
 - [X] Implement basic functionality
