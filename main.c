@@ -1,17 +1,20 @@
 #include <word-search.h>
-#define DIRECTIONS 8
 
-#define N 0
-#define NE 1
-#define E 2
-#define SE 3
-#define S 4
-#define SW 5
-#define W 6
-#define NW 7
-
+static const int DIRECTIONS = 8;
 #define BOLD "\x1b[31m"
 #define RESET "\x1b[0m"
+
+typedef enum
+{
+    N = 0,
+    NE,
+    E,
+    SE,
+    S,
+    SW,
+    W,
+    NW
+} direction;
 
 static bchar **scramble;
 
