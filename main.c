@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Usage: word-search list puzzle\n");
         return 1;
     }
-    
+
     setlocale(LC_ALL, "");
     FILE *list, *puzzle;
 

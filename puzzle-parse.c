@@ -78,7 +78,7 @@ bchar *get_row(FILE *inptr)
             row[count].ch = wc;
             row[count].color = INVALID;
             count++;
-        }    
+        }
     }
     if (rsize > count || rsize == INVALID)
     {

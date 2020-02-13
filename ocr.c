@@ -76,10 +76,10 @@ FILE *read_image(char *file, image_t type)
     puzzle_img = fopen(buf, "r");
 
     free(buf);
-  	TessDeleteText(text);
-	TessBaseAPIEnd(handle);
-	TessBaseAPIDelete(handle);
-	pixDestroy(&img);
-	
-	return puzzle_img;
+    TessDeleteText(text);
+    TessBaseAPIEnd(handle);
+    TessBaseAPIDelete(handle);
+    pixDestroy(&img);
+
+    return puzzle_img;
 }

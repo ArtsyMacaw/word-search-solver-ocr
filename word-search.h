@@ -30,7 +30,7 @@ typedef struct
 typedef struct trie
 {
     bool valid;
-    struct trie *path[ALPHABET]; 
+    struct trie *path[ALPHABET];
 } trie;
 
 typedef enum {
