@@ -76,7 +76,7 @@ bchar *get_row(FILE *inptr)
         if (wc != ' ' && wc != '	')
         {
             row[count].ch = wc;
-            row[count].highlight = false;
+            row[count].color = INVALID;
             count++;
         }    
     }

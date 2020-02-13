@@ -12,7 +12,8 @@ FILE *read_image(char *file, image_t type)
 
     if (type == PUZZLE_LIST_IMAGE)
     {
-        e = TessBaseAPIInit1(handle, NULL, "eng", OEM_TESSERACT_ONLY, ((char **) &"blacklist"), CONFIG_SIZE);
+        char *config = "blacklist";
+        e = TessBaseAPIInit1(handle, NULL, "eng", OEM_TESSERACT_ONLY, &config, CONFIG_SIZE);
     }
     else
     {
