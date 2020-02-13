@@ -1,8 +1,6 @@
 #include <word-search.h>
 
 static const int DIRECTIONS = 8;
-#define BOLD "\x1b[31m"
-#define RESET "\x1b[0m"
 
 typedef enum
 {
@@ -15,6 +13,26 @@ typedef enum
     W,
     NW
 } direction;
+
+static const int COLORS = 6;
+
+#define ANSI_CODE_RED "\x1b[31m"
+#define ANSI_CODE_GREEN "\x1b[32m"
+#define ANSI_CODE_YELLOW "\x1b[33m"
+#define ANSI_CODE_BLUE "\x1b[34m"
+#define ANSI_CODE_MAGENTA "\x1b[35m"
+#define ANSI_CODE_CYAN "\x1b[36m"
+#define ANSI_CODE_RESET "\x1b[0m"
+
+typedef enum
+{
+    COLOR_RED = 0,
+    COLOR_GREEN,
+    COLOR_YELLOW,
+    COLOR_BLUE,
+    COLOR_MAGENTA,
+    COLOR_CYAN
+} color;
 
 static bchar **scramble;
 
@@ -36,10 +54,10 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    if (isImage(list))
+    if (is_image(list))
     {
         fclose(list);
-        list = read_list_image(argv[1]);
+        list = read_image(argv[1], WORD_LIST_IMAGE);
     }
     else
     {
@@ -60,10 +78,10 @@ int main(int argc, char *argv[])
         return 4;
     }
 
-    if (isImage(puzzle))
+    if (is_image(puzzle))
     {
         fclose(puzzle);
-        puzzle = read_puzzle_image(argv[2]);
+        puzzle = read_image(argv[2], PUZZLE_LIST_IMAGE);
     }
     else
     {
@@ -85,6 +103,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Unable to determine size of sides\n");
         return 6;
     }
+
     pos cor;
 
     for (int x = 0; x < m; x++)
@@ -102,13 +121,29 @@ int main(int argc, char *argv[])
     {
         for (int y = 0; y < n; y++)
         {
-            if (scramble[x][y].highlight)
+            switch (scramble[x][y].color % COLORS)
             {
-                wprintf(BOLD L"%lc" RESET, scramble[x][y].ch);
-            }
-            else
-            {
-                wprintf(L"%lc", scramble[x][y].ch);
+                case COLOR_RED:
+                    wprintf(ANSI_CODE_RED L"%lc" ANSI_CODE_RESET, scramble[x][y].ch);
+                    break;
+                case COLOR_CYAN:
+                    wprintf(ANSI_CODE_CYAN L"%lc" ANSI_CODE_RESET, scramble[x][y].ch);
+                    break;
+                case COLOR_BLUE:
+                    wprintf(ANSI_CODE_BLUE L"%lc" ANSI_CODE_RESET, scramble[x][y].ch);
+                    break;
+                case COLOR_GREEN:
+                    wprintf(ANSI_CODE_GREEN L"%lc" ANSI_CODE_RESET, scramble[x][y].ch);
+                    break;
+                case COLOR_YELLOW:
+                    wprintf(ANSI_CODE_YELLOW L"%lc" ANSI_CODE_RESET, scramble[x][y].ch);
+                    break;
+                case COLOR_MAGENTA:
+                    wprintf(ANSI_CODE_MAGENTA L"%lc" ANSI_CODE_RESET, scramble[x][y].ch);
+                    break;
+                default:
+                    wprintf(L"%lc", scramble[x][y].ch);
+                    break;
             }
             wprintf(L" ");
         }
@@ -119,6 +154,7 @@ int main(int argc, char *argv[])
     unload_array(scramble);
     fclose(list);
     fclose(puzzle);
+
     return 0;
 }
 
@@ -202,13 +238,17 @@ pos translate(pos cor, int dir)
 
 void highlight(pos *cors, int length)
 {
+    static int color = 0;
+
     for (int i = 0; i < length; i++)
     {
-        scramble[cors[i].x][cors[i].y].highlight = true;
+        scramble[cors[i].x][cors[i].y].color = color;
     }
+
+    color++;
 }
 
-bool isImage(FILE *inptr)
+bool is_image(FILE *inptr)
 {
     unsigned char header[8];
     fread(header, sizeof(unsigned char), 8, inptr);

@@ -11,13 +11,13 @@
 #include <ctype.h>
 
 #define INVALID -1
-#define ALPHABET 65536
+#define ALPHABET 1114112
 #define DEFAULT_SIZE 100
 
 typedef struct
 {
     wchar_t ch;
-    bool highlight;
+    char color;
 } bchar;
 
 typedef struct
@@ -33,8 +33,12 @@ typedef struct trie
     struct trie *path[ALPHABET]; 
 } trie;
 
-FILE *read_puzzle_image(char *file);
-FILE *read_list_image(char *file);
+typedef enum {
+    PUZZLE_LIST_IMAGE,
+    WORD_LIST_IMAGE
+} image_t;
+
+FILE *read_image(char *file, image_t type);
 wchar_t *get_word(FILE *inptr);
 void index_node(trie *node);
 void check(pos cor);
@@ -50,6 +54,6 @@ trie *locate(pos *key, int length);
 void unload_trie(void);
 void unload_array(bchar **tmp);
 int word_length(void);
-bool isImage(FILE *inptr);
+bool is_image(FILE *inptr);
 
 #endif
